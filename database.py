@@ -1,14 +1,6 @@
 import pymysql
 import settings
 
-# Verbindung mit der Datenbank herstellen
-
-
-# Cursor erstellen
-
-# Abfrage ausführen
-
-
 class Database:
     def __init__(self) -> None:
         self.db_user = settings.Db_User
@@ -27,6 +19,17 @@ class Database:
         # Ergebnisse abrufen
         if self.cursor.fetchone():
             return True
+        else:
+            return False
+
+    def check_credentials(self, username, pwd) -> bool:
+        query = f'SELECT * FROM user WHERE username = "{username}" and password = "{pwd}"'
+        self.cursor.execute(query)
+        if self.cursor.fetchone():
+            return True
+        else: 
+            return False
+
 
     def close(self)-> bool:
         
@@ -35,6 +38,6 @@ class Database:
         self.cnx.close()
         return True
 
-db = Database()
-db.check_if_user_exists()
-db.close()
+# db = Database()
+# db.check_if_user_exists()
+# db.close()
