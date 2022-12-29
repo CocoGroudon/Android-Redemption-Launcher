@@ -18,25 +18,6 @@ class MainWindow(tk.Tk):
         self.title("Game Launcher")
         self.geometry(f"{self.window_width}x{self.window_height}")
 
-        self.style = ttk.Style(self)
-                # radio button
-        self.selected_theme = tk.StringVar()
-        theme_frame = ttk.LabelFrame(self, text='Themes')
-        theme_frame.grid(padx=10, pady=10, ipadx=20, ipady=20, sticky='w')
-
-        for theme_name in self.style.theme_names():
-            rb = ttk.Radiobutton(
-                theme_frame,
-                text=theme_name,
-                value=theme_name,
-                variable=self.selected_theme,
-                command=self.change_theme)
-            rb.pack(expand=True, fill='both')
-
-    def change_theme(self):
-        self.style.theme_use(self.selected_theme.get())
-
-
         self.login_frame = LoginFrame(self)
         self.login_frame.pack(side="top", fill="both", expand=True)
         self.show_login_frame()
