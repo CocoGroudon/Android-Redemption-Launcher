@@ -3,9 +3,9 @@ from tkinter import ttk
 import subprocess
 import os
 import sys
-
-
-
+import zipfile
+from tkinter import filedialog
+import requests
 
 
 class Launcher:
@@ -65,13 +65,34 @@ class Launcher:
 
     def setup(self):
         # Download the repository
+        #https://github.com/CocoGroudon/Android-Redemption/archive/refs/tags/alpha.zip
         result = subprocess.run(["git", "clone", "https://github.com/CocoGroudon/Android-Redemption.git"])
+
+        response = requests.get("https://api.github.com/repos/CocoGroudon/Android-Redemption/releases/latest")
+        
+        if response.status_code == 200:
+            release = response.json()
+            download_url = release["assets"][0]["browser_download_url"]
+            filename = release["assets"][0]["name"]
+            r = requests.get(download_url)
+            open(filename, "wb").write(r.content)
+        else:
+            print("Error:", response.status_code)
+
         if result.returncode != 0:
-            self.status_label.config(text="Error: Occured while cloning the repository.")
+            self.status_label.config(text="Error: Occured while downloading the Game.")
             self.status_label.config(foreground="red")
             return
-        self.status_label.config(text="Repository cloned successfully.")
+        self.status_label.config(text="Game downloaded successfully.")
         self.status_label.config(foreground="green")
+
+
+        extract_path = filedialog.askdirectory(initialdir = ".", title = "Select directory to extract to")
+
+        with zipfile.ZipFile("Android-Redemption-alpha.zip", "r") as zip_ref:
+            zip_ref.extractall(extract_path)
+
+
         # Create a virtual environment
         result = subprocess.run(["python", "-m", "venv", "venv"])
         if result.returncode != 0:
