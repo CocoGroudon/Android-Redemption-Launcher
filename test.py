@@ -1,7 +1,11 @@
 import tkinter as tk
-from tkinter import Button
+from tkinter import ttk
 import subprocess
 import os
+import ttkthemes
+
+
+
 
 def run_file1():
     #add your code here
@@ -22,20 +26,19 @@ def setup():
     os.system(r'venv\Scripts\activate.bat')
 
     # Install the requirements
-    subprocess.run(["pip", "install", "-r", "Android-Redemption\requirements.txt"])
+    subprocess.run(["pip", "install", "-r", "Android-Redemption/requirements.txt"])
 
-if not os.path.exists("venv"):
+if not os.path.exists("venv") and not os.path.exists("Android-Redemption") :
     setup()
 
-root = tk.Tk()
-root.title("Python Launcher")
+    root = tk.Tk()
+    ttkthemes.set_theme("plastik")
+    root.title("Python Launcher")
+    file1_button = ttk.Button(root, text="Run File 1", command=run_file1, font=("Arial", 14), background="#2ecc71", foreground="white")
+    file1_button.pack()
 
-file1_button = Button(root, text="Run File 1", command=run_file1)
-file1_button.pack()
+    file2_button = ttk.Button(root, text="Run File 2", command=run_file2, font=("Arial", 14), background="#2ecc71", foreground="white", )
+    file2_button.pack()
 
-file2_button = Button(root, text="Run File 2", command=run_file2)
-file2_button.pack()
-
-root.mainloop()
-
+    root.mainloop()
 
