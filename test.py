@@ -6,39 +6,109 @@ import sys
 
 
 
-def run_file1():
-    	subprocess.run([sys.executable, "Android-Redemption\Game\window_manager.py"], shell=False, check=True)
-#Android-Redemption\Game\window_manager.py
 
-def update_game():
-    #add your code here
-    pass 
 
-def setup():
-    # Download the repository
-    subprocess.run(["git", "clone", "https://github.com/CocoGroudon/Android-Redemption.git"])
-    # Create a virtual environment
-    subprocess.run(["python", "-m", "venv", "venv"])
+class Launcher:
+    def __init__(self):        
+        self.button_name = "Download"
+        self.root = tk.Tk()
+        self.root.title("Android Redemption Launcher")
+        self.root.geometry("800x600")
+        self.root.minsize("800","600")
+        self.root.maxsize("800","600")
 
-    # Activate the virtual environment
-    os.system(r'venv\Scripts\activate.bat')
 
-    # Install the requirements
-    subprocess.run(["pip", "install", "-r", "Android-Redemption/requirements.txt"])
 
-if not os.path.exists("venv") and not os.path.exists("Android-Redemption") :
-    setup()
+        
+    def create_gui(self):
+        self.status_label = tk.Label(self.root, text="")
+        self.status_label.place(x=100, y=450, width=600, height=50)
 
-root = tk.Tk()
-root.title("Android Redemption Launcher")
-root.geometry("800x600")
-root.minsize("800","600")
-root.maxsize("800","600")
-file1_button = ttk.Button(root, text="Starten", command=run_file1)
-file1_button.place(x=100, y=225, width=225, height=150)
+        file1_button = ttk.Button(self.root, text=self.btn_text, command=self.button_1)
+        file1_button.place(x=100, y=225, width=225, height=150)
 
-file2_button = ttk.Button(root, text="Update", command=update_game)
-file2_button.place(x=475, y=225, width=225, height=150)
+        file2_button = ttk.Button(self.root, text="Run", command=self.run_file1)
+        file2_button.place(x=475, y=225, width=225, height=150)
+    
+    def button_1(self):
+        if not os.path.exists("venv") and not os.path.exists("Android-Redemption") :
+            self.setup()
+            self.btn_text = "Update"
+        else:
+            self.update_game()
 
-root.mainloop()
+    def run_file1(self):
+        if os.path.exists("Android-Redemption/Game/window_manager.py"):
+            subprocess.run([sys.executable, "Android-Redemption/Game/window_manager.py"], shell=False, check=True)
+        else:
+            self.status_label.config(text="Error: window_manager.py not found.")
+            self.status_label.config(foreground="red")
 
+    def update_game(self):
+        #add your code here
+        #Android-Redemption
+        result = subprocess.run(['git', '-C',"Android-Redemption" , 'pull'])
+        if result.returncode != 0:
+            self.status_label.config(text="Error: Occured while cloning the repository.")
+            self.status_label.config(foreground="red")
+            return
+        self.status_label.config(text="Repository cloned successfully.")
+        self.status_label.config(foreground="green")
+
+        result = subprocess.run(["pip", "install", "-r", "Android-Redemption/requirements.txt"])
+        if result.returncode != 0:
+            self.status_label.config(text="Error: Occured while installing the requirements.")
+            self.status_label.config(foreground="red")
+            return
+        self.status_label.config(text="Requirements installed successfully.")
+        self.status_label.config(foreground="green")
+
+    def setup(self):
+        # Download the repository
+        result = subprocess.run(["git", "clone", "https://github.com/CocoGroudon/Android-Redemption.git"])
+        if result.returncode != 0:
+            self.status_label.config(text="Error: Occured while cloning the repository.")
+            self.status_label.config(foreground="red")
+            return
+        self.status_label.config(text="Repository cloned successfully.")
+        self.status_label.config(foreground="green")
+        # Create a virtual environment
+        result = subprocess.run(["python", "-m", "venv", "venv"])
+        if result.returncode != 0:
+            self.status_label.config(text="Error:   Occured while creating virtual environment.")
+            self.status_label.config(foreground="red")
+            return
+        self.status_label.config(text="Virtual environment created successfully.")
+        self.status_label.config(foreground="green")
+        # Activate the virtual environment
+        os.system(r'venv\Scripts\activate.bat')
+        # Install the requirements
+        result = subprocess.run(["pip", "install", "-r", "Android-Redemption/requirements.txt"])
+        if result.returncode != 0:
+            self.status_label.config(text="Error: Occured while installing the requirements.")
+            self.status_label.config(foreground="red")
+            return
+        self.status_label.config(text="Requirements installed successfully.")
+        self.status_label.config(foreground="green")
+
+        self.button_name = "Update"
+        self.file1_button.config(text=self.button_name)
+
+    def start(self):
+        if not os.path.exists("venv") and not os.path.exists("Android-Redemption") :
+            self.btn_text = "Download"
+        else:
+            self.btn_text = "Update"
+
+        self.create_gui()
+        self.root.mainloop()
+        if not os.path.exists("venv") and not os.path.exists("Android-Redemption") :
+            self.setup()
+        else:
+            self.btn_text = "Update"
+            self.status_label.config(text="Ready to game")
+            self.status_label.config(foreground="green")
+
+if __name__ == "__main__":
+    launcher = Launcher()
+    launcher.start()
