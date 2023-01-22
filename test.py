@@ -2,23 +2,21 @@ import tkinter as tk
 from tkinter import ttk
 import subprocess
 import os
-import ttkthemes
-
+import sys
 
 
 
 def run_file1():
-    #add your code here
-    pass
+    	subprocess.run([sys.executable, "Android-Redemption\Game\window_manager.py"], shell=False, check=True)
+#Android-Redemption\Game\window_manager.py
 
-def run_file2():
+def update_game():
     #add your code here
     pass 
 
 def setup():
     # Download the repository
     subprocess.run(["git", "clone", "https://github.com/CocoGroudon/Android-Redemption.git"])
-
     # Create a virtual environment
     subprocess.run(["python", "-m", "venv", "venv"])
 
@@ -31,14 +29,16 @@ def setup():
 if not os.path.exists("venv") and not os.path.exists("Android-Redemption") :
     setup()
 
-    root = tk.Tk()
-    ttkthemes.set_theme("plastik")
-    root.title("Python Launcher")
-    file1_button = ttk.Button(root, text="Run File 1", command=run_file1, font=("Arial", 14), background="#2ecc71", foreground="white")
-    file1_button.pack()
+root = tk.Tk()
+root.title("Android Redemption Launcher")
+root.geometry("800x600")
+root.minsize("800","600")
+root.maxsize("800","600")
+file1_button = ttk.Button(root, text="Starten", command=run_file1)
+file1_button.place(x=100, y=225, width=225, height=150)
 
-    file2_button = ttk.Button(root, text="Run File 2", command=run_file2, font=("Arial", 14), background="#2ecc71", foreground="white", )
-    file2_button.pack()
+file2_button = ttk.Button(root, text="Update", command=update_game)
+file2_button.place(x=475, y=225, width=225, height=150)
 
-    root.mainloop()
+root.mainloop()
 
