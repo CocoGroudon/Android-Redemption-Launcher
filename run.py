@@ -1,5 +1,4 @@
-from pywinauto import Desktop
+from distutils.core import setup
+import py2exe
 
-dlg = Desktop(backend="uia").UAC_dialog
-if dlg.exists():
-    dlg.yes.click()
+setup(console=["test.py"])
