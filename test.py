@@ -130,7 +130,10 @@ class Launcher:
         self.button_name = "Update"
 
     def start(self):
-        self.new_folder_namefolder_name = self.extract_folder_name_from_json("settings.json")
+        try:
+            self.new_folder_namefolder_name = self.extract_folder_name_from_json("settings.json")
+        except Exception:
+            pass
         if not os.path.exists("venv") and not os.path.exists(self.filename) :
             self.btn_text = "Download"
         else:
