@@ -1,0 +1,10 @@
+[ {
+"type" : "shop_tp",
+    "attributes" : {
+        "pos_x" : 600,
+        "pos_y" : 800,
+        "size_x" : 100,
+        "size_y" : 100
+    }
+}
+]

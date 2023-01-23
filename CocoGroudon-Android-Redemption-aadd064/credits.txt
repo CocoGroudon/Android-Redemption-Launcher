@@ -1,0 +1,9 @@
+parallax background: https://ansimuz.itch.io/mountain-dusk-parallax-background
+
+icons:  https://icons8.com/icon/UVV1WLowY0N7/q
+        https://icons8.com/icon/WGiOkfVvY9Q2/e
+        https://icons8.com/icon/10324/left-click
+
+Künstler:
+        Jan Schnippering
+        

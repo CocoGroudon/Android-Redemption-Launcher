@@ -1,0 +1,10 @@
+[ {
+"type" : "new_level",
+    "attributes" : {
+        "pos_x" : 800,
+        "pos_y" : 700,
+        "size_x" : 100,
+        "size_y" : 500
+    }
+}
+]
