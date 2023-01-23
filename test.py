@@ -7,6 +7,15 @@ import zipfile
 from tkinter import filedialog
 import requests
 import json
+import atexit
+
+
+
+def check_if_running(script_name):
+    for line in os.popen("ps -ef | grep " + script_name):
+        if script_name in line:
+            return True
+    return False
 
 class Launcher:
     def __init__(self):        
@@ -19,11 +28,12 @@ class Launcher:
 
         self.filename = ""
         self.new_folder_name = ""
+        self.isRunning = False
+        
 
-    def extract_folder_name_from_json(json_file_name):
-        with open(json_file_name, "r") as json_file:
-            data = json.load(json_file)
-            return data["folder_name"]
+    def exit_handler(self):
+        print("Exiting program")
+        subprocess.call(["pkill","-f","window_manager.py"])
 
 
     def create_gui(self):
@@ -44,13 +54,20 @@ class Launcher:
             self.update_game()
 
     def run_file1(self):
-        if os.path.exists(self.new_folder_name):
-            source_code = f"{self.new_folder_name}window_manager.py"
-            print(source_code)
-            subprocess.Popen(["python", "CocoGroudon-Android-Redemption-aadd064\Game\window_manager.py"])
-        else:
-            self.status_label.config(text="Error: window_manager.py not found.")
+        if self.isRunning == True:
+            self.status_label.config(text="Already running")
             self.status_label.config(foreground="red")
+        else:
+            print(f"2. {self.new_folder_name}")
+            if os.path.exists(self.new_folder_name):
+                print(self.new_folder_name)
+                source_code = f"{self.new_folder_name}Game/window_manager.py"
+                print(source_code)
+                subprocess.Popen(["python", source_code])
+                self.isRunning = True
+            else:
+                self.status_label.config(text="Error: window_manager.py not found.")
+                self.status_label.config(foreground="red")
 
     def update_game(self):
         #add your code here
@@ -79,8 +96,9 @@ class Launcher:
             release = response.json()
             download_url = release["zipball_url"]
             self.filename = release["tag_name"]
-            print(self.filename)
+            
             r = requests.get(download_url)
+            print(r.content)
             open(self.filename, "wb").write(r.content)
         else:
             print("Error:", response.status_code)
@@ -130,23 +148,30 @@ class Launcher:
         self.button_name = "Update"
 
     def start(self):
-        try:
-            self.new_folder_namefolder_name = self.extract_folder_name_from_json("settings.json")
-        except Exception:
-            pass
+        if os.path.isfile("settings.json"):
+
+            # JSON READING
+            with open("settings.json") as json_file:
+                data = json.load(json_file)
+                self.new_folder_name = data["folder_name"]
+                print(f'1. folder_name: {self.new_folder_name}')
+        else:
+            print("Die Datei settings.json existiert nicht.")
+
         if not os.path.exists("venv") and not os.path.exists(self.filename) :
             self.btn_text = "Download"
         else:
             self.btn_text = "Update"
 
         self.create_gui()
-        self.root.mainloop()
-        if not os.path.exists("venv") and not os.path.exists(self.filename) :
-            self.setup()
-        else:
+        if os.path.isfile("settings.json"):       
             self.btn_text = "Update"
             self.status_label.config(text="Ready to game")
             self.status_label.config(foreground="green")
+        self.root.mainloop()
+        if not os.path.exists("venv") and not os.path.exists(self.filename) :
+            self.setup()
+        atexit.register(self.exit_handler)
 
 if __name__ == "__main__":
     launcher = Launcher()
